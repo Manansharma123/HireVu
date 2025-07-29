@@ -8,7 +8,7 @@ requests==2.31.0
 weasyprint==60.1
 python-multipart==0.0.6
 websockets==12.0
-torch==2.2.1
+torch
 opencv-python==4.8.1.78
 mediapipe
 numpy==1.24.3
