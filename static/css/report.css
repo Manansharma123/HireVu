@@ -1,0 +1,123 @@
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.report-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.btn-download {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-left: auto;
+    transition: background-color 0.3s;
+}
+
+.btn-download:hover {
+    background-color: var(--secondary-color);
+}
+
+.report-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.score-card, .summary-card {
+    flex: 1;
+    min-width: 250px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.score-card {
+    background-color: #e3f2fd;
+    text-align: center;
+}
+
+.score-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 10px 0;
+}
+
+.summary-card {
+    background-color: #f5f5f5;
+}
+
+.report-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-section h2 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.report-section ul {
+    list-style-position: inside;
+    margin-left: 10px;
+}
+
+.report-section li {
+    margin-bottom: 8px;
+}
+
+.transcript {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.transcript-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.transcript-item.interviewer {
+    border-left: 4px solid var(--primary-color);
+}
+
+.transcript-item.candidate {
+    border-left: 4px solid #4caf50;
+    margin-left: 20px;
+}
+
+.transcript-item strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.transcript-item p {
+    margin: 0;
+    line-height: 1.5;
+}

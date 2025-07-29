@@ -1,0 +1,87 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment and dependency folders
+venv/
+.venv/
+env/
+ENV/
+bot/
+bot/lib/
+env.bak/
+
+# Package distributions and installers
+*.egg
+*.egg-info/
+dist/
+build/
+*.tar.gz
+*.whl
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor project files
+.vscode/
+*.code-workspace
+
+# Environment and secrets
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS/Editor swap/backup
+*.swp
+*.bak
+*.tmp
+*~
+
+# Uploaded/generated content
+audio_files/
+*.mp3
+*.wav
+*.pdf
+
+# Static/media cache (if any)
+media/
+staticfiles/
+
+# Reports
+*.pdf
+
+# Test files and outputs
+test/
+tests/
+*.out
+
+# Weasyprint temp files
+weasyprint_temp_*
+
+# Python packaging
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Data files
+*.sqlite3
+*.db
+
+# Ignore requirements lock files (unless you want to track them)
+poetry.lock
+Pipfile.lock
+
+# Ignore all site-packages not in your code
+site-packages/
+
+# VS Code
+.vscode/
+
+# PyInstaller
+*.spec

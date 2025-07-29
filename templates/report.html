@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Report - AI Interview Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header-info {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .header-info-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* ADDED: Candidate details section */
+        .candidate-details {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .candidate-details h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .candidate-details p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .kpi-dashboard {
+            margin-bottom: 40px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .kpi-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .kpi-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .kpi-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 5px 0;
+        }
+        
+        .kpi-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* ADDED: Proctoring section styles */
+        .proctoring-section {
+            margin-bottom: 40px;
+        }
+        
+        .proctoring-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .status-clean {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-violations {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .violations-list {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .violation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .violation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .violation-type {
+            font-weight: 500;
+            color: #856404;
+        }
+        
+        .violation-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .violation-severity {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+        
+        .severity-low {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .severity-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .severity-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .charts-section {
+            margin-bottom: 40px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: 400px;
+        }
+        
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .chart-canvas {
+            height: 300px !important;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .transcript-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .transcript-item.interviewer {
+            border-left: 4px solid #667eea;
+        }
+        
+        .transcript-item.candidate {
+            border-left: 4px solid #28a745;
+        }
+        
+        .timestamp {
+            color: #666;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .feedback-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        
+        .strengths-improvements {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .strengths-improvements {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .strengths-card, .improvements-card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .strengths-card {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-left: 4px solid #28a745;
+        }
+        
+        .improvements-card {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Interview Performance Report</h1>
+            <div class="header-info">
+                <div class="header-info-item">
+                    <strong>Date:</strong> {{ report.interview_date }}
+                </div>
+                <div class="header-info-item">
+                    <strong>Overall Score:</strong> {{ "%.1f"|format(report.overall_score) }}/100
+                </div>
+            </div>
+            
+            <!-- ADDED: Candidate details section -->
+            <div class="candidate-details">
+                <h3>👤 Candidate Information</h3>
+                <p><strong>Name:</strong> {{ report.candidate_name }}</p>
+                {% if report.candidate_phone %}
+                <p><strong>Phone:</strong> {{ report.candidate_phone }}</p>
+                {% endif %}
+                {% if report.candidate_email %}
+                <p><strong>Email:</strong> {{ report.candidate_email }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- ADDED: Proctoring Section -->
+            <div class="section proctoring-section">
+                <h2>🔒 Interview Integrity Report</h2>
+                <div class="proctoring-status">
+                    {% if report.proctoring_violations and report.proctoring_violations|length > 0 %}
+                        <span class="status-badge status-violations">
+                            ⚠️ {{ report.proctoring_violations|length }} Violation(s) Detected
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-clean">
+                            ✅ No Violations Detected - Clean Interview
+                        </span>
+                    {% endif %}
+                </div>
+                
+                {% if report.proctoring_violations and report.proctoring_violations|length > 0 %}
+                <div class="violations-list">
+                    <h4>Detected Violations:</h4>
+                    {% for violation in report.proctoring_violations %}
+                    <div class="violation-item">
+                        <div>
+                            <div class="violation-type">{{ violation.type }}</div>
+                            <div class="violation-time">{{ violation.timestamp }}</div>
+                        </div>
+                        <span class="violation-severity severity-{{ violation.severity }}">
+                            {{ violation.severity.upper() }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="color: #28a745; font-weight: 500;">
+                    ✅ The candidate maintained proper interview conduct throughout the session. 
+                    No instances of looking away, multiple people, or identity changes were detected.
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- KPI Dashboard -->
+            <div class="kpi-dashboard">
+                <h2>📊 Key Performance Indicators</h2>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <h3>🗣️ Communication</h3>
+                        <div class="kpi-value">{{ "%.1f"|format(report.kpis.communication_score or 0) }}</div>
+                        <div class="kpi-label">out of 10</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>🔧 Technical Skills</h3>
+                        <div class="kpi-value">{{ "%.1f"|format(report.kpis.technical_score or 0) }}</div>
+                        <div class="kpi-label">out of 10</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>🧠 Problem Solving</h3>
+                        <div class="kpi-value">{{ "%.1f"|format(report.kpis.problem_solving_score or 0) }}</div>
+                        <div class="kpi-label">out of 10</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>💪 Confidence</h3>
+                        <div class="kpi-value">{{ "%.1f"|format(report.kpis.confidence_score or 0) }}</div>
+                        <div class="kpi-label">out of 10</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>✅ Completion Rate</h3>
+                        <div class="kpi-value">{{ "%.1f"|format(report.kpis.completion_rate or 0) }}%</div>
+                        <div class="kpi-label">questions completed</div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>📈 Engagement</h3>
+                        <div class="kpi-value">{{ report.kpis.engagement_level or "Medium" }}</div>
+                        <div class="kpi-label">overall level</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Charts -->
+            <div class="charts-section">
+                <h2>📈 Performance Visualization</h2>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Communication Skills Analysis</div>
+                        <canvas id="communicationChart" class="chart-canvas"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Technical Skills Breakdown</div>
+                        <canvas id="technicalChart" class="chart-canvas"></canvas>
+                    </div>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Overall Performance Radar</div>
+                        <canvas id="radarChart" class="chart-canvas"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Interview Progress</div>
+                        <canvas id="progressChart" class="chart-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strengths and Improvements -->
+            <div class="section">
+                <h2>💡 Strengths & Improvement Areas</h2>
+                <div class="strengths-improvements">
+                    <div class="strengths-card">
+                        <h3>✅ Key Strengths</h3>
+                        {% if report.strengths %}
+                            {% for strength in report.strengths %}
+                                <p>• {{ strength }}</p>
+                            {% endfor %}
+                        {% else %}
+                            <p>Continue developing your skills to identify more strengths.</p>
+                        {% endif %}
+                    </div>
+                    <div class="improvements-card">
+                        <h3>📈 Areas for Improvement</h3>
+                        {% if report.areas_for_improvement %}
+                            {% for area in report.areas_for_improvement %}
+                                <p>• {{ area }}</p>
+                            {% endfor %}
+                        {% else %}
+                            <p>Great job! Keep up the excellent work.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Feedback -->
+            <div class="section">
+                <h2>📝 Detailed Feedback</h2>
+                <div class="feedback-content">{{ report.detailed_feedback }}</div>
+            </div>
+
+            <!-- Interview Transcript -->
+            <div class="section">
+                <h2>💬 Interview Transcript</h2>
+                {% if report.interview_transcript %}
+                    {% for item in report.interview_transcript %}
+                    <div class="transcript-item {{ item.role }}">
+                        <strong>{{ item.role.title() }}:</strong> {{ item.content }}
+                        <div class="timestamp">{{ item.timestamp }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No interview transcript available.</p>
+                {% endif %}
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <a href="/report/download" class="btn btn-primary">📄 Download PDF Report</a>
+                <a href="/" class="btn btn-secondary">🔄 Start New Interview</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart.js configurations
+        const chartColors = {
+            primary: '#667eea',
+            secondary: '#764ba2',
+            success: '#28a745',
+            warning: '#ffc107',
+            info: '#17a2b8',
+            light: '#f8f9fa',
+            dark: '#343a40'
+        };
+
+        // Safely get KPI values with fallbacks
+        const kpiData = {
+            communication: {{ report.kpis.communication_score or 0 }},
+            technical: {{ report.kpis.technical_score or 0 }},
+            problemSolving: {{ report.kpis.problem_solving_score or 0 }},
+            confidence: {{ report.kpis.confidence_score or 0 }},
+            clarity: {{ report.kpis.clarity_score or 0 }},
+            questionsAnswered: {{ report.kpis.questions_answered or 0 }},
+            completionRate: {{ report.kpis.completion_rate or 0 }},
+            engagementLevel: '{{ report.kpis.engagement_level or "Medium" }}'
+        };
+
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Communication Skills Circular Chart
+            const communicationCtx = document.getElementById('communicationChart');
+            if (communicationCtx) {
+                new Chart(communicationCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Communication Score', 'Room for Growth'],
+                        datasets: [{
+                            data: [kpiData.communication, Math.max(0, 10 - kpiData.communication)],
+                            backgroundColor: [chartColors.primary, chartColors.light],
+                            borderColor: [chartColors.primary, '#e9ecef'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+            }
+
+            // Technical Skills Chart
+            const technicalCtx = document.getElementById('technicalChart');
+            if (technicalCtx) {
+                new Chart(technicalCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Technical Skills', 'Room for Growth'],
+                        datasets: [{
+                            data: [kpiData.technical, Math.max(0, 10 - kpiData.technical)],
+                            backgroundColor: [chartColors.success, chartColors.light],
+                            borderColor: [chartColors.success, '#e9ecef'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+            }
+
+            // Radar Chart
+            const radarCtx = document.getElementById('radarChart');
+            if (radarCtx) {
+                new Chart(radarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Communication', 'Technical', 'Problem Solving', 'Confidence', 'Clarity'],
+                        datasets: [{
+                            label: 'Your Performance',
+                            data: [
+                                kpiData.communication,
+                                kpiData.technical,
+                                kpiData.problemSolving,
+                                kpiData.confidence,
+                                kpiData.clarity
+                            ],
+                            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                            borderColor: chartColors.primary,
+                            borderWidth: 2,
+                            pointBackgroundColor: chartColors.primary,
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 10
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Progress Chart
+            const progressCtx = document.getElementById('progressChart');
+            if (progressCtx) {
+                // Convert engagement level to numeric value
+                let engagementValue = 6; // Default medium
+                if (kpiData.engagementLevel === 'High') engagementValue = 9;
+                else if (kpiData.engagementLevel === 'Low') engagementValue = 3;
+
+                new Chart(progressCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Questions Answered', 'Completion Rate', 'Engagement Level'],
+                        datasets: [{
+                            label: 'Progress Metrics',
+                            data: [
+                                kpiData.questionsAnswered,
+                                kpiData.completionRate,
+                                engagementValue
+                            ],
+                            backgroundColor: [chartColors.primary, chartColors.success, chartColors.warning],
+                            borderColor: [chartColors.primary, chartColors.success, chartColors.warning],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

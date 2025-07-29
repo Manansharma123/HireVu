@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Simulator</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional styles for the enhanced upload section */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .interview-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 15px;
+            position: relative;
+        }
+        
+        .text-input-group {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+        }
+        
+        #user-text-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        #user-text-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        #send-text-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #send-text-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #2980b9, #8e44ad);
+        }
+        
+        #send-text-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        #record-btn {
+            position: absolute;
+            right: -60px;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            padding: 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #record-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        #record-btn.recording {
+            animation: pulse 1.5s infinite;
+            background: #e74c3c;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            border-radius: 2px;
+        }
+
+        /* User Details Section */
+        #user-details-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: 2px dashed #e0e0e0;
+        }
+
+        #user-details-form:hover {
+            border-color: #3498db;
+            background: #f0f7ff;
+        }
+
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .user-details-grid input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .user-details-grid input:hover {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .user-details-grid input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        #upload-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: 2px dashed #e0e0e0;
+        }
+
+        #upload-form:hover {
+            border-color: #3498db;
+            background: #f0f7ff;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #34495e;
+            transition: all 0.3s ease;
+        }
+
+        #resume {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        #resume:hover {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        #resume:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        #start-interview-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #start-interview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #2980b9, #8e44ad);
+        }
+
+        #start-interview-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #status-indicator {
+            text-align: center;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-idle {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        /* Face Capture Section */
+        #face-capture-container {
+            display: none;
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .capture-video-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        #capture-video {
+            width: 400px;
+            height: 300px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 3px solid #3498db;
+        }
+
+        .capture-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .capture-controls button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #capture-photo-btn {
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            color: white;
+        }
+
+        #retake-photo-btn {
+            background: #f39c12;
+            color: white;
+        }
+
+        #proceed-interview-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .capture-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .captured-photo-preview {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        #captured-photo {
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 3px solid #27ae60;
+        }
+
+        /* Animation for the upload section */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #user-details-form, #upload-form {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* File upload preview */
+        .file-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e8f4fd;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .file-preview.show {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .file-size {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Split Screen Layout */
+        .split-screen {
+            display: flex;
+            gap: 20px;
+            height: 70vh;
+        }
+
+        .interview-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .avatar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Avatar Styles */
+        .avatar-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .ai-avatar-box {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .student-camera-box {
+            background: rgba(46, 204, 113, 0.1);
+            position: relative;
+        }
+
+        /* Violation effect for camera box */
+        .student-camera-box.violation {
+            animation: violationFlash 2s ease-out;
+        }
+
+        @keyframes violationFlash {
+            0% { background: rgba(46, 204, 113, 0.1); }
+            50% { background: rgba(231, 76, 60, 0.3); }
+            100% { background: rgba(46, 204, 113, 0.1); }
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        #interviewer-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-label {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* Student Camera Styles */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #student-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Proctoring Overlay */
+        .proctoring-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .proctor-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 20;
+        }
+
+        .proctor-warnings {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: none;
+            z-index: 20;
+        }
+
+        .proctor-warnings.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Speaking Indicators */
+        .speaking-indicator {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 15px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ai-avatar-box .speaking-indicator {
+            background: #3498db;
+        }
+
+        /* Speaking Animations */
+        @keyframes ai-speaking {
+            0% { transform: translateX(-50%) scaleY(1); }
+            25% { transform: translateX(-50%) scaleY(1.8); }
+            50% { transform: translateX(-50%) scaleY(0.7); }
+            75% { transform: translateX(-50%) scaleY(1.3); }
+            100% { transform: translateX(-50%) scaleY(1); }
+        }
+
+        .ai-speaking {
+            border-color: #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .ai-speaking .speaking-indicator {
+            animation: ai-speaking 0.8s infinite;
+            opacity: 1;
+        }
+
+        /* Blinking Animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .blinking {
+            animation: blink 3s infinite;
+        }
+
+        /* Smooth transitions for better UX */
+        .container, #user-details-form, #upload-form, #face-capture-container, #interview-container {
+            transition: all 0.3s ease;
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Success indicators */
+        .success-check {
+            color: #28a745;
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        /* Progress indicator */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0;
+            list-style: none;
+        }
+
+        .progress-step {
+            position: relative;
+            padding: 10px 20px;
+            background: #e0e0e0;
+            margin: 0 5px;
+            border-radius: 5px;
+            color: #666;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .progress-step.active {
+            background: #3498db;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Enhanced button animations */
+        button, .btn-primary {
+            transition: all 0.3s ease;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Mobile responsiveness improvements */
+        @media (max-width: 768px) {
+            .split-screen {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .avatar-wrapper {
+                width: 150px;
+                height: 150px;
+            }
+            
+            #record-btn {
+                position: relative;
+                right: auto;
+                top: auto;
+                margin-top: 10px;
+            }
+            
+            .interview-controls {
+                flex-direction: column;
+            }
+            
+            .text-input-group {
+                width: 100%;
+            }
+
+            #capture-video {
+                width: 300px;
+                height: 225px;
+            }
+
+            .capture-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .user-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .progress-step {
+                margin: 5px 0;
+                width: 200px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Interview Simulator</h1>
+        
+        <!-- Progress Indicator -->
+        <ul class="progress-steps" id="progress-steps">
+            <li class="progress-step active" id="step-1">📝 Personal Info</li>
+            <li class="progress-step" id="step-2">📄 Resume Upload</li>
+            <li class="progress-step" id="step-3">📸 Face Verification</li>
+            <li class="progress-step" id="step-4">🎯 Interview</li>
+        </ul>
+        
+        <!-- User Details Form -->
+        <form id="user-details-form">
+            <h3 style="margin-bottom: 1rem; color: #2c3e50;">📝 Personal Information</h3>
+            <div class="user-details-grid">
+                <input type="text" id="user-name" name="name" placeholder="Full Name *" required>
+                <input type="tel" id="user-phone" name="phone" placeholder="Phone Number *" required>
+                <input type="email" id="user-email" name="email" placeholder="Email Address *" required>
+            </div>
+        </form>
+
+        <!-- Resume Upload Form -->
+        <form id="upload-form">
+            <div class="form-group">
+                <label for="resume">📄 Upload Your Resume (PDF):</label>
+                <input type="file" id="resume" name="resume" accept=".pdf" required multiple>
+                <div id="file-preview" class="file-preview">
+                    <div class="file-info">
+                        <span class="file-icon">📄</span>
+                        <div>
+                            <div class="file-name" id="display-filename">No file selected</div>
+                            <div class="file-size" id="display-filesize"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" id="start-interview-btn" class="btn-primary">Continue to Face Verification</button>
+        </form>
+
+        <!-- Face Capture Section -->
+        <div id="face-capture-container">
+            <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">📸 Face Verification</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">Please capture a clear photo of your face for identity verification during the interview.</p>
+            
+            <div class="capture-video-container">
+                <video id="capture-video" autoplay muted></video>
+                <canvas id="capture-canvas" style="display: none;"></canvas>
+            </div>
+            
+            <div class="captured-photo-preview">
+                <h3>Preview:</h3>
+                <img id="captured-photo" alt="Captured photo">
+            </div>
+            
+            <div class="capture-controls">
+                <button type="button" id="capture-photo-btn">📷 Capture Photo</button>
+                <button type="button" id="retake-photo-btn" style="display: none;">🔄 Retake</button>
+                <button type="button" id="proceed-interview-btn" style="display: none;">✅ Start Interview</button>
+            </div>
+        </div>
+        
+        <div id="status-indicator" class="status-idle">Ready to start</div>
+        
+        <div id="interview-container" style="display: none;">
+            <div class="split-screen">
+                <!-- Left side - Interview content -->
+                <div class="interview-content">
+                    <div class="interview-header">
+                        <h2>Live Interview</h2>
+                    </div>
+                    
+                    <div id="transcript-container" class="transcript"></div>
+                    
+                    <div class="interview-controls">
+                        <div class="text-input-group">
+                            <input type="text" id="user-text-input" placeholder="Type your response...">
+                            <button id="send-text-btn" class="btn-send">Send</button>
+                        </div>
+                        <button id="record-btn" title="🎤︎︎"><i class="fas fa-microphone"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Right side - Avatars -->
+                <div class="avatar-container">
+                    <!-- AI Avatar -->
+                    <div class="avatar-box ai-avatar-box">
+                        <div class="avatar-wrapper">
+                            <img id="interviewer-avatar" src="/static/avatars/ai_avatar.png" alt="AI Interviewer">
+                            <div class="speaking-indicator"></div>
+                        </div>
+                        <div class="avatar-label">Interviewer</div>
+                    </div>
+                    
+                    <!-- Student Camera with Proctoring -->
+                    <div class="avatar-box student-camera-box">
+                        <div class="camera-container">
+                            <video id="student-video" autoplay muted></video>
+                            <canvas id="face-canvas" style="display: none;"></canvas>
+                            
+                            <!-- Proctoring Overlay -->
+                            <div class="proctoring-overlay">
+                                <div class="proctor-status" id="proctor-status">
+                                   
+                                    <div>Warnings: <span id="warning-count">0/3</span></div>
+                                    <div>Gaze: <span id="gaze-direction">CENTER</span></div>
+                                </div>
+                                
+                                <div class="proctor-warnings" id="proctor-warnings">
+                                    <div id="warning-message"></div>
+                                    <div id="warning-timer"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="avatar-label">You</div>
+                    </div>
+                </div>
+            </div>
+            
+            <audio id="audio-player" controls style="display: none;"></audio>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+    <script src="/static/js/interview.js"></script>
+    <script>
+        // Additional script for file preview and form validation
+        document.getElementById('resume').addEventListener('change', function(e) {
+            const filePreview = document.getElementById('file-preview');
+            const fileNameDisplay = document.getElementById('display-filename');
+            const fileSizeDisplay = document.getElementById('display-filesize');
+            
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+                fileNameDisplay.textContent = file.name;
+                fileSizeDisplay.textContent = formatFileSize(file.size);
+                filePreview.classList.add('show');
+                
+                // Add a small animation when file is selected
+                filePreview.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    filePreview.style.transform = 'scale(1)';
+                }, 100);
+            } else {
+                filePreview.classList.remove('show');
+            }
+        });
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Form validation
+        function validateUserDetails() {
+            const name = document.getElementById('user-name').value.trim();
+            const phone = document.getElementById('user-phone').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            
+            if (!name || !phone || !email) {
+                showValidationError('Please fill in all personal information fields.');
+                return false;
+            }
+            
+            if (name.length < 2) {
+                showValidationError('Please enter a valid name (at least 2 characters).');
+                return false;
+            }
+            
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showValidationError('Please enter a valid email address.');
+                return false;
+            }
+            
+            // Basic phone validation (accepts various formats)
+            const phoneRegex = /^[\+]?[\s\-\(\)0-9]{10,}$/;
+            if (!phoneRegex.test(phone)) {
+                showValidationError('Please enter a valid phone number (at least 10 digits).');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function showValidationError(message) {
+            // Create or update error message element
+            let errorDiv = document.getElementById('validation-error');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'validation-error';
+                errorDiv.style.cssText = `
+                    background: #f8d7da;
+                    color: #721c24;
+                    padding: 12px;
+                    border-radius: 6px;
+                    margin: 10px 0;
+                    border: 1px solid #f5c6cb;
+                    animation: shake 0.5s ease-in-out;
+                `;
+                document.getElementById('user-details-form').appendChild(errorDiv);
+            }
+            errorDiv.textContent = message;
+            
+            // Add shake animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    75% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Remove error after 5 seconds
+            setTimeout(() => {
+                if (errorDiv) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function removeValidationError() {
+            const errorDiv = document.getElementById('validation-error');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+
+        // Progress indicator functions
+        function updateProgress(currentStep) {
+            const steps = ['step-1', 'step-2', 'step-3', 'step-4'];
+            
+            steps.forEach((stepId, index) => {
+                const stepElement = document.getElementById(stepId);
+                if (index < currentStep - 1) {
+                    stepElement.className = 'progress-step completed';
+                } else if (index === currentStep - 1) {
+                    stepElement.className = 'progress-step active';
+                } else {
+                    stepElement.className = 'progress-step';
+                }
+            });
+        }
+
+        // Auto-advance to step 2 when personal info is complete
+        function checkPersonalInfoComplete() {
+            const name = document.getElementById('user-name').value.trim();
+            const phone = document.getElementById('user-phone').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            
+            if (name && phone && email && validateUserDetails()) {
+                updateProgress(2);
+                // Add visual feedback
+                document.getElementById('step-1').innerHTML = '✅ Personal Info';
+            }
+        }
+
+        // Add event listeners for progress tracking
+        ['user-name', 'user-email', 'user-phone'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                removeValidationError();
+                setTimeout(checkPersonalInfoComplete, 500); // Debounce
+            });
+        });
+
+        // Update progress when resume is uploaded
+        document.getElementById('resume').addEventListener('change', function(e) {
+            const filePreview = document.getElementById('file-preview');
+            const fileNameDisplay = document.getElementById('display-filename');
+            const fileSizeDisplay = document.getElementById('display-filesize');
+            
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+                fileNameDisplay.textContent = file.name;
+                fileSizeDisplay.textContent = formatFileSize(file.size);
+                filePreview.classList.add('show');
+                
+                // Update progress
+                updateProgress(3);
+                document.getElementById('step-2').innerHTML = '✅ Resume Upload';
+                
+                // Add a small animation when file is selected
+                filePreview.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    filePreview.style.transform = 'scale(1)';
+                }, 100);
+            } else {
+                filePreview.classList.remove('show');
+                updateProgress(2);
+                document.getElementById('step-2').innerHTML = '📄 Resume Upload';
+            }
+        });
+
+        // Update start button to validate before proceeding
+        document.getElementById('start-interview-btn').addEventListener('click', function() {
+            if (validateUserDetails()) {
+                // Original functionality will be handled by the interview app
+                app.startInterview();
+            }
+        });
+    </script>
+</body>
+</html>
